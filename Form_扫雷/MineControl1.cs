@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Form_扫雷.Properties;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -28,7 +29,10 @@ namespace Form_扫雷
             for (int i = 0; i < PaneLineCount * PaneLineCount; i++)
             {
                 Pane pane = new Pane();
-                pane.MouseDown += new MouseEventHandler(pane_MouseDown);  //动态地设置事件
+
+                    pane.MouseDown += new MouseEventHandler(pane_MouseDown);  //动态地设置事件
+                
+                
                 this.Controls.Add(pane);
             }
             //布局所有方格位置
@@ -43,16 +47,25 @@ namespace Form_扫雷
 
         }
 
-        public void pane_MouseDown(object sender, EventArgs e)
+
+        public void pane_MouseDown(object sender, MouseEventArgs e)
         {
-            
             Pane pane = (Pane)sender;
-            this.CleaningPanes(pane);
-            if (pane.IsMine)
+            if (e.Button == MouseButtons.Left)
             {
-                MessageBox.Show("你触雷了！");
-                pane.Open();
+                
+                this.CleaningPanes(pane);
+                if (pane.IsMine)
+                {
+                    MessageBox.Show("你触雷了！");
+                    pane.Open();
+                }
             }
+            if (e.Button == MouseButtons.Right)
+            {
+                pane.BackgroundImage = Resources.Mark;
+            }
+
             
         }
         public void CleaningPanes(Pane Selectpane)
