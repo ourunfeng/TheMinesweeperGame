@@ -38,6 +38,7 @@ namespace Form_扫雷
             if (this.IsMine == true)
             {
                 this.BackgroundImage = Resources.Mine;
+                
                 this.Enabled = false;
             }
             else
@@ -83,6 +84,7 @@ namespace Form_扫雷
 
                 }
             }
+            this.GetState = PaneState.Opend;
         }
 
         public void Mark()

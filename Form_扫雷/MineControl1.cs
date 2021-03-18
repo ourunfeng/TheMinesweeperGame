@@ -16,13 +16,7 @@ namespace Form_扫雷
         {
             InitializeComponent();
         }
-        //扫雷成功
-        public delegate void MineSweeppedSuccessfulEventHandeler(object sender, EventArgs e);
-        public event MineSweeppedSuccessfulEventHandeler MineSweepped;
 
-        //扫雷失败
-        public delegate void MineSweeppedFaileEventHandelr(object sender, EventArgs e);
-        public event MineSweeppedFaileEventHandelr MineSweeppedFaile;
 
         /// <summary>
         /// 初始化实例数量
@@ -52,8 +46,45 @@ namespace Form_扫雷
         public void pane_MouseDown(object sender, EventArgs e)
         {
             
+            Pane pane = (Pane)sender;
+            this.CleaningPanes(pane);
+            if (pane.IsMine)
+            {
+                MessageBox.Show("你触雷了！");
+                pane.Open();
+            }
+            
         }
+        public void CleaningPanes(Pane Selectpane)
+        {
+            //如果被选择的方格属于开启状态或者雷，则返回
+            if (Selectpane.GetState == PaneState.Opend || Selectpane.IsMine == true)
+            {
+                return;
+            }
+            Selectpane.Open();
+            List<Pane> aroundPaneCounts = new List<Pane>();
+            aroundPaneCounts = GetAroundPaneCounts(Selectpane);
+            //遍历被选中方格的周围方格
+            foreach (Pane pane in aroundPaneCounts)
+            {
+                //如果周围的地雷数等于0，开启选中的方格
+                if (GetAroundMineCounts(pane) == 0)
+                {
+                    CleaningPanes(pane);
 
+                }
+                //否则如果被选中的方格不是开启状态并且没有雷，那么开启
+                else
+                {
+                    if (Selectpane.GetState != PaneState.Opend && Selectpane.IsMine != true)
+                    {
+                        Selectpane.Open();
+                    }
+                }
+            }
+
+        }
 
 
 
@@ -132,32 +163,7 @@ namespace Form_扫雷
                 }
             }
             return mineCounts;
-            //int paneWidth = pane.Width;
-            //int paneHight = pane.Height;
-            //int aroundmineCounts = 0;
-            //foreach (Pane searchPane in this.Controls)
-            //{
-            //    //   判断水平相邻的两个地块是否有雷  
-            //    //如果循环到的方格的x坐标+方格的宽度等于传进来的方格x坐标，且Y坐标相等，则代表它们相邻
-            //    if (searchPane.Left + paneWidth == pane.Left && searchPane.Top == pane.Top && searchPane.IsMine == true ||
-            //        searchPane.Left - paneWidth == pane.Left && searchPane.Top == pane.Top && searchPane.IsMine == true)
-            //    {
-            //        aroundmineCounts += 1;
-            //    }
-            //    //   判断垂直相邻的两个地块是否有雷  
-            //    if (searchPane.Top - paneHight == pane.Top && searchPane.Left == pane.Left && searchPane.IsMine == true ||
-            //        searchPane.Top + paneHight == pane.Top && searchPane.Left == pane.Left && searchPane.IsMine == true)
-            //    {
-            //        aroundmineCounts += 1;
-            //    }
-            //    //判断对角是否有雷
-            //    if (Math.Abs(searchPane.Top - pane.Top) == paneHight &&
-            //        Math.Abs(pane.Left - searchPane.Left) == paneWidth && searchPane.IsMine == true)
-            //    {
-            //        aroundmineCounts += 1;
-            //    }
-            //}
-            //return aroundmineCounts;
+
 
         }
 
